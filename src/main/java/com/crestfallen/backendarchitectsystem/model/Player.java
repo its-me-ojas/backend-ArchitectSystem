@@ -1,12 +1,12 @@
 package com.crestfallen.backendarchitectsystem.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.*;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Entity
@@ -16,11 +16,30 @@ public class Player {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer userId;
+
     private String username;
     private String password;
     private String email;
-    private Date createdAt;
-    private Date lastLoginAt;
+    private Integer age;
+    private Date creationDate;
+    private Date lastActiveDate;
     private Integer totalPoints;
+
+    @OneToOne
+    @JoinColumn(name = "attribute_id")
+    private Attribute attributes;
+
     private Integer level;
+
+    @ManyToMany
+    @JoinTable(
+            name = "player_quest",
+            joinColumns = @JoinColumn(name = "player_id"),
+            inverseJoinColumns = @JoinColumn(name = "quest_id")
+    )
+    private List<Player> friends;
+
+    @OneToOne
+    @JoinColumn(name = "quest_id")
+    private Quest quest;
 }

@@ -1,6 +1,7 @@
 package com.crestfallen.backendarchitectsystem.controller;
 
 import com.crestfallen.backendarchitectsystem.model.Player;
+import com.crestfallen.backendarchitectsystem.service.JwtService;
 import com.crestfallen.backendarchitectsystem.service.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,6 +18,8 @@ public class PlayerController {
     private PlayerService playerService;
     @Autowired
     AuthenticationManager authenticationManager;
+    @Autowired
+    JwtService jwtService;
 
     @PostMapping("register")
     public Player register(@RequestBody Player player) {
@@ -31,7 +34,7 @@ public class PlayerController {
                         player.getPassword()
                 ));
         if (authentication.isAuthenticated())
-            return "Success";
+            return jwtService.generateUsername(player.getUsername());
         else
             return "Failed";
     }

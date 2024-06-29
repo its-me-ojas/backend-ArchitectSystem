@@ -33,9 +33,9 @@ public class Player {
 
     @ManyToMany
     @JoinTable(
-            name = "player_quest",
+            name = "player_friends",
             joinColumns = @JoinColumn(name = "player_id"),
-            inverseJoinColumns = @JoinColumn(name = "quest_id")
+            inverseJoinColumns = @JoinColumn(name = "friend_id")
     )
     private List<Player> friends;
 

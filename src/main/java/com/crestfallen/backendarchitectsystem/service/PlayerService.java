@@ -19,8 +19,8 @@ public class PlayerService {
         player.setPassword(encoder.encode(player.getPassword()));
         player.setTotalPoints(0);
         player.setLevel(player.getTotalPoints() / 10);
-        player.setCreatedAt(new Date());
-        player.setLastLoginAt(player.getCreatedAt());
+        player.setCreationDate(new Date());
+        player.setLastActiveDate(player.getCreationDate());
         return playerRepository.save(player);
     }
 }

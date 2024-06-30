@@ -23,9 +23,9 @@ public class Attribute {
 //    @JoinColumn(name = "quest_id")
 //    private Quest quest;
 
-    private Integer strength;
-    private Integer intelligence;
-    private Integer agility;
-    private Integer stamina;
-    private Integer discipline;
+    private Integer strength = 0;
+    private Integer intelligence = 0;
+    private Integer agility = 0;
+    private Integer stamina = 0;
+    private Integer discipline = 0;
 }

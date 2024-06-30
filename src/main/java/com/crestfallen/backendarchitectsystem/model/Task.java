@@ -19,7 +19,7 @@ public class Task {
     private String description;
     private String category;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "quest_id")
     @JsonBackReference
     private Quest quest;

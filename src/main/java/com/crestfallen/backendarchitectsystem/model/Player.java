@@ -25,14 +25,14 @@ public class Player {
     private Integer age;
     private Date creationDate;
     private Date lastActiveDate;
-    private Integer totalPoints;
+    private Integer totalPoints = 0;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "attribute_id")
     @JsonManagedReference
     private Attribute attributes;
 
-    private Integer level;
+    private Integer level = 1;
 
     @ManyToMany
     @JsonIgnore
@@ -43,8 +43,9 @@ public class Player {
     )
     private List<Player> friends;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "quest_id")
     @JsonManagedReference
     private Quest quest;
+
 }

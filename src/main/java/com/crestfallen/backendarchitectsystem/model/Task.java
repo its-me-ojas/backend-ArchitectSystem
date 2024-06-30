@@ -15,7 +15,7 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer taskId;
 
-    private Boolean isCompleted;
+    private Boolean isCompleted = false;
     private String description;
     private String category;
 

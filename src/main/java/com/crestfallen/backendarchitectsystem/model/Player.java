@@ -1,5 +1,7 @@
 package com.crestfallen.backendarchitectsystem.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,11 +29,13 @@ public class Player {
 
     @OneToOne
     @JoinColumn(name = "attribute_id")
+    @JsonManagedReference
     private Attribute attributes;
 
     private Integer level;
 
     @ManyToMany
+    @JsonIgnore
     @JoinTable(
             name = "player_friends",
             joinColumns = @JoinColumn(name = "player_id"),
@@ -41,5 +45,6 @@ public class Player {
 
     @OneToOne
     @JoinColumn(name = "quest_id")
+    @JsonManagedReference
     private Quest quest;
 }

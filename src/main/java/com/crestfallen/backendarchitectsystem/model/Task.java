@@ -1,5 +1,6 @@
 package com.crestfallen.backendarchitectsystem.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,5 +21,6 @@ public class Task {
 
     @ManyToOne
     @JoinColumn(name = "quest_id")
+    @JsonBackReference
     private Quest quest;
 }

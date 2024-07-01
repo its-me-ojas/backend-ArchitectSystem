@@ -5,7 +5,9 @@ import com.crestfallen.backendarchitectsystem.exception.Player.UnauthorisedPlaye
 import com.crestfallen.backendarchitectsystem.exception.Task.TaskArgumentNotProvidedException;
 import com.crestfallen.backendarchitectsystem.exception.Task.TaskNotPresentException;
 import com.crestfallen.backendarchitectsystem.model.Quest;
+import com.crestfallen.backendarchitectsystem.model.Task;
 import com.crestfallen.backendarchitectsystem.service.QuestService;
+import com.crestfallen.backendarchitectsystem.service.TaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,12 +15,15 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/quest")
 @RequiredArgsConstructor
 public class QuestController {
 
     private final QuestService questService;
+    private final TaskService taskService;
 
     // /api/v1/quest/{username}
     // retrieve a quest by username
@@ -69,11 +74,22 @@ public class QuestController {
         return new ResponseEntity<>(quest, HttpStatus.OK);
     }
 
+    // /api/v1/quest/{username}/clear-tasks
+    // clear all tasks from a quest
+    @DeleteMapping("{username}/clear-tasks")
+    public ResponseEntity<List<Task>> deleteAllTasks(
+            @PathVariable String username,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        String usernameFromToken = userDetails.getUsername();
+        if (!username.equals(usernameFromToken)) {
+            throw new UnauthorisedPlayerException("Unauthorised player");
+        }
+        List<Task> tasks = questService.deleteAllTaskFromQuest(username);
+        return new ResponseEntity<>(tasks, HttpStatus.OK);
+    }
 
-//    DELETE /quests/{id}: Delete a quest.
-//    GET /quests/{id}/tasks: Retrieve tasks of a specific quest.
 
-// exception handler
+    // exception handler
 
     @ExceptionHandler(UnauthorisedPlayerException.class)
     public ResponseEntity<String> handleUnauthorisedPlayerException(UnauthorisedPlayerException e) {

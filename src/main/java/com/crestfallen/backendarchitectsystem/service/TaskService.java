@@ -10,6 +10,9 @@ import com.crestfallen.backendarchitectsystem.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class TaskService {
@@ -46,5 +49,16 @@ public class TaskService {
             }
         }
         throw new TaskNotPresentException("Task not present in quest");
+    }
+
+    public List<Task> deleteAllTaskFromQuest(String username) {
+        Quest quest = playerService.getPlayerByUsername(username).getQuest();
+        List<Task> tasks = new ArrayList<>(quest.getTasks());
+        for (Task task : tasks) {
+            quest.removeTask(task);
+            taskRepository.delete(task);
+        }
+        questRepository.save(quest);
+        return quest.getTasks();
     }
 }

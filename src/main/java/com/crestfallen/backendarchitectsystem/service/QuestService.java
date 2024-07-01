@@ -3,6 +3,9 @@ package com.crestfallen.backendarchitectsystem.service;
 import com.crestfallen.backendarchitectsystem.Dto.TaskDTO;
 import com.crestfallen.backendarchitectsystem.exception.Task.TaskArgumentNotProvidedException;
 import com.crestfallen.backendarchitectsystem.exception.Task.TaskNotPresentException;
+import com.crestfallen.backendarchitectsystem.exception.Task.TaskStillPendingException;
+import com.crestfallen.backendarchitectsystem.model.Attribute;
+import com.crestfallen.backendarchitectsystem.model.Player;
 import com.crestfallen.backendarchitectsystem.model.Quest;
 import com.crestfallen.backendarchitectsystem.model.Task;
 import com.crestfallen.backendarchitectsystem.repository.QuestRepository;
@@ -38,5 +41,24 @@ public class QuestService {
 
     public List<Task> deleteAllTaskFromQuest(String username) {
         return taskService.deleteAllTaskFromQuest(username);
+    }
+
+    public Attribute completeQuest(String username) {
+        Quest quest = playerService.getPlayerByUsername(username).getQuest();
+        List<Task> tasks = quest.getTasks();
+        Boolean check = true;
+        for (Task task : tasks) {
+            if (!task.getIsCompleted()) {
+                check = false;
+            }
+        }
+        Player player = playerService.getPlayerByUsername(username);
+        Attribute attributes = player.getAttributes();
+        if (check) {
+            attributes.setDiscipline(attributes.getDiscipline() + 1);
+        } else {
+            throw new TaskStillPendingException("Task still pending");
+        }
+        return attributes;
     }
 }

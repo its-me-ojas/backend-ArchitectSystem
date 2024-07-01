@@ -4,6 +4,8 @@ import com.crestfallen.backendarchitectsystem.Dto.TaskDTO;
 import com.crestfallen.backendarchitectsystem.exception.Player.UnauthorisedPlayerException;
 import com.crestfallen.backendarchitectsystem.exception.Task.TaskArgumentNotProvidedException;
 import com.crestfallen.backendarchitectsystem.exception.Task.TaskNotPresentException;
+import com.crestfallen.backendarchitectsystem.exception.Task.TaskStillPendingException;
+import com.crestfallen.backendarchitectsystem.model.Attribute;
 import com.crestfallen.backendarchitectsystem.model.Quest;
 import com.crestfallen.backendarchitectsystem.model.Task;
 import com.crestfallen.backendarchitectsystem.service.QuestService;
@@ -88,6 +90,19 @@ public class QuestController {
         return new ResponseEntity<>(tasks, HttpStatus.OK);
     }
 
+    // /api/v1/quest/{username}/complete
+    // complete full quest
+    @PutMapping("{username}/complete")
+    public ResponseEntity<Attribute> completeQuest(
+            @PathVariable String username,
+            @AuthenticationPrincipal UserDetails userDetails) {
+        String usernameFromToken = userDetails.getUsername();
+        if (!username.equals(usernameFromToken)) {
+            throw new UnauthorisedPlayerException("Unauthorised player");
+        }
+        Attribute attributes = questService.completeQuest(username);
+        return new ResponseEntity<>(attributes, HttpStatus.OK);
+    }
 
     // exception handler
 
@@ -104,6 +119,11 @@ public class QuestController {
     @ExceptionHandler(TaskNotPresentException.class)
     public ResponseEntity<String> handleTaskNotPresentException(TaskNotPresentException e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(TaskStillPendingException.class)
+    public ResponseEntity<String> handleTaskStillPendingException(TaskStillPendingException e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
 

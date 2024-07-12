@@ -12,6 +12,9 @@ import com.crestfallen.backendarchitectsystem.repository.AttributeRepository;
 import com.crestfallen.backendarchitectsystem.repository.QuestRepository;
 import com.crestfallen.backendarchitectsystem.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,7 +23,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class TaskService {
-
+    private final Logger logger = LoggerFactory.getLogger(TaskService.class);
 
     private final PlayerService playerService;
     private final TaskRepository taskRepository;
@@ -110,4 +113,15 @@ public class TaskService {
         }
         throw new TaskNotPresentException("Task not present");
     }
+
+    @Scheduled(cron = "0 20 23 * * ?")
+    public void resetTasks() {
+        try {
+            taskRepository.resetAllTasks();
+            logger.info("All tasks reset to \"not completed\" successfully");
+        } catch (Exception e) {
+            logger.error("Error occurred while resetting tasks: ", e);
+        }
+    }
+
 }

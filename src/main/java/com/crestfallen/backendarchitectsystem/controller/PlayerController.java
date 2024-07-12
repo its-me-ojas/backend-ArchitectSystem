@@ -14,6 +14,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,14 +33,15 @@ public class PlayerController {
     // /api/v1/player/register
     // register a player
     @PostMapping("register")
-    public Player register(@RequestBody PlayerDTO playerDTO) {
+    public PlayerDTO register(@RequestBody PlayerDTO playerDTO) {
         return playerService.saveUser(playerDTO);
     }
 
     // /api/v1/player/login
     // login a player
+//    @Transactional(readOnly = true)
     @PostMapping("login")
-    public String login(@RequestBody Player player) {
+    public String login(@RequestBody PlayerDTO player) {
         Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(
                         player.getUsername(),

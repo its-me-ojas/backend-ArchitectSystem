@@ -1,22 +1,25 @@
 package com.crestfallen.backendarchitectsystem.service;
 
+import com.crestfallen.backendarchitectsystem.util.AvatarUtil;
 import com.crestfallen.backendarchitectsystem.Dto.PlayerDTO;
-import com.crestfallen.backendarchitectsystem.exception.Player.PlayerIsAlreadyFriend;
-import com.crestfallen.backendarchitectsystem.exception.Player.PlayerNotFoundException;
-import com.crestfallen.backendarchitectsystem.exception.Player.SamePasswordException;
-import com.crestfallen.backendarchitectsystem.exception.Player.UsernameAlreadyExistsException;
+import com.crestfallen.backendarchitectsystem.exception.Player.*;
 import com.crestfallen.backendarchitectsystem.model.Attribute;
 import com.crestfallen.backendarchitectsystem.model.Player;
 import com.crestfallen.backendarchitectsystem.model.Quest;
 import com.crestfallen.backendarchitectsystem.repository.AttributeRepository;
 import com.crestfallen.backendarchitectsystem.repository.PlayerRepository;
 import com.crestfallen.backendarchitectsystem.repository.QuestRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -31,12 +34,25 @@ public class PlayerService {
     private AttributeRepository attributeRepository;
     @Autowired
     private QuestRepository questRepository;
+    private final Logger logger = LoggerFactory.getLogger(PlayerService.class);
+    @Autowired
+    private ResourceLoader resourceLoader;
 
-    public Player saveUser(PlayerDTO playerDTO) {
+    public PlayerDTO saveUser(PlayerDTO playerDTO) {
         if (playerRepository.findByUsername(playerDTO.getUsername()) != null) {
             throw new UsernameAlreadyExistsException("Username " + playerDTO.getUsername() + " already exists");
         }
         Player player = new Player();
+//        try {
+//            Resource resource = resourceLoader.getResource("classpath:static/avatar/ErankSungJinwoo.png");
+//            File imageFile = resource.getFile();
+//            byte[] imageBytes = AvatarUtil.convertPngToBin(imageFile);
+//            player.setAvatar(imageBytes);
+//        } catch (Exception e) {
+//            throw new AvatarNotCreatedException("Error while converting avatar to BIN" + e.getMessage());
+//        }
+
+
         player.setUsername(playerDTO.getUsername());
         player.setPassword(encoder.encode(playerDTO.getPassword()));
         player.setEmail(playerDTO.getEmail());
@@ -53,7 +69,8 @@ public class PlayerService {
         questRepository.save(quest);
 
 
-        return playerRepository.save(player);
+        playerRepository.save(player);
+        return playerDTO;
     }
 
     // retrieve a list of players

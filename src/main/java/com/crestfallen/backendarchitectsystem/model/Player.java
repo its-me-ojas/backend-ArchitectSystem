@@ -19,6 +19,10 @@ public class Player {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer userId;
 
+//    @Lob
+//    @JsonIgnore
+//    private byte[] avatar;
+
     private String username;
     private String password;
     private String email;

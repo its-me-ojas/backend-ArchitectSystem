@@ -8,6 +8,7 @@ import com.crestfallen.backendarchitectsystem.exception.Task.TaskStillPendingExc
 import com.crestfallen.backendarchitectsystem.model.Attribute;
 import com.crestfallen.backendarchitectsystem.model.Quest;
 import com.crestfallen.backendarchitectsystem.model.Task;
+import com.crestfallen.backendarchitectsystem.service.PlayerService;
 import com.crestfallen.backendarchitectsystem.service.QuestService;
 import com.crestfallen.backendarchitectsystem.service.TaskService;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ public class QuestController {
 
     private final QuestService questService;
     private final TaskService taskService;
+    private final PlayerService playerService;
 
     // /api/v1/quest/{username}
     // retrieve a quest by username
@@ -40,6 +42,7 @@ public class QuestController {
             throw new UnauthorisedPlayerException("Unauthorised player");
         }
         Quest quest = questService.getQuestByUsername(username);
+        playerService.updateLastActiveDate(username);
         return new ResponseEntity<>(quest, HttpStatus.OK);
     }
 

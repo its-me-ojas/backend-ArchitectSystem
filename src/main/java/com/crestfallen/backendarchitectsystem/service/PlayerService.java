@@ -1,6 +1,5 @@
 package com.crestfallen.backendarchitectsystem.service;
 
-import com.crestfallen.backendarchitectsystem.util.AvatarUtil;
 import com.crestfallen.backendarchitectsystem.Dto.PlayerDTO;
 import com.crestfallen.backendarchitectsystem.exception.Player.*;
 import com.crestfallen.backendarchitectsystem.model.Attribute;
@@ -12,14 +11,12 @@ import com.crestfallen.backendarchitectsystem.repository.QuestRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -51,8 +48,6 @@ public class PlayerService {
 //        } catch (Exception e) {
 //            throw new AvatarNotCreatedException("Error while converting avatar to BIN" + e.getMessage());
 //        }
-
-
         player.setUsername(playerDTO.getUsername());
         player.setPassword(encoder.encode(playerDTO.getPassword()));
         player.setEmail(playerDTO.getEmail());
@@ -185,4 +180,11 @@ public class PlayerService {
         player.getFriends().remove(friend);
         return playerRepository.save(player);
     }
+
+    public void updateLastActiveDate(String username) {
+        Player player = getPlayerByUsername(username);
+        player.setLastActiveDate(new Date());
+        playerRepository.save(player);
+    }
 }
+

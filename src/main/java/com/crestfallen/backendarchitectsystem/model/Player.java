@@ -7,6 +7,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -52,4 +55,12 @@ public class Player {
     @JsonManagedReference
     private Quest quest;
 
+    @Transient
+    public Duration getTimeSinceLastLogin() {
+        if (lastActiveDate == null) {
+            return Duration.ZERO;
+        }
+        LocalDateTime lastLogin = new Timestamp(lastActiveDate.getTime()).toLocalDateTime();
+        return Duration.between(lastLogin, LocalDateTime.now());
+    }
 }

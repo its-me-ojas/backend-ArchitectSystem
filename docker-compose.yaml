@@ -1,0 +1,26 @@
+services:
+  backend-server:
+    image: itscrestfallen/backendarchitectsystem:0.0.1-SNAPSHOT
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    networks:
+      - backend-network
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/sololeveling_db
+
+  postgres:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    networks:
+      - backend-network
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=pass
+      - POSTGRES_DB=sololeveling_db
+
+
+networks:
+  backend-network:

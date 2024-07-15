@@ -33,7 +33,7 @@ build/
 .vscode/
 
 ### Docker Files ###
-Dockerfile
+#Dockerfile
 docker-compose.yml
 
 ### ENV Files ###

@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.crestfallen</groupId>
     <artifactId>backendArchitectSystem</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.3-SNAPSHOT</version>
     <name>backendArchitectSystem</name>
     <description>backendArchitectSystem</description>
     <url/>
@@ -100,7 +100,7 @@
     </dependencies>
 
     <build>
-        <finalName>backendAS</finalName>
+        <finalName>backendAS_${project.version}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

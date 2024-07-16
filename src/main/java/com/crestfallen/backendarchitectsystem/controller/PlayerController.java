@@ -10,10 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,16 +44,19 @@ public class PlayerController {
     // login a player
 //    @Transactional(readOnly = true)
     @PostMapping("login")
-    public String login(@RequestBody PlayerDTO player) {
-        Authentication authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(
-                        player.getUsername(),
-                        player.getPassword()
-                ));
-        if (authentication.isAuthenticated())
-            return jwtService.generateUsername(player.getUsername());
-        else
-            return "Failed";
+    public ResponseEntity<String> login(@RequestBody PlayerDTO player) {
+        try {
+            Authentication authentication = authenticationManager
+                    .authenticate(new UsernamePasswordAuthenticationToken(
+                            player.getUsername(),
+                            player.getPassword()
+                    ));
+            if (authentication.isAuthenticated())
+                return new ResponseEntity<>(jwtService.generateUsername(player.getUsername()), HttpStatus.OK);
+        } catch (PlayerNotFoundException | BadCredentialsException e) {
+            throw e;
+        }
+        return new ResponseEntity<>("Password is incorrect", HttpStatus.UNAUTHORIZED);
     }
 
     // /api/v1/player/players
@@ -188,5 +194,10 @@ public class PlayerController {
     @ExceptionHandler(PlayerIsAlreadyFriend.class)
     public ResponseEntity<String> handlePlayerIsAlreadyFriend(PlayerIsAlreadyFriend e) {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<String> handleBadCredentialsException(BadCredentialsException e) {
+        return new ResponseEntity<>("Bad Credentials", HttpStatus.UNAUTHORIZED);
     }
 }

@@ -1,6 +1,6 @@
 services:
   backend-server:
-    image: itscrestfallen/backendarchitectsystem:0.0.2-SNAPSHOT
+    image: itscrestfallen/backendarchitectsystem:0.0.3-SNAPSHOT
     ports:
       - "8080:8080"
     depends_on:
